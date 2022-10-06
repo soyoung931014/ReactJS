@@ -59,6 +59,7 @@ body {
 }
 a {
   text-decoration:none;
+  color: inherit//부모로 부터 상속
 }
 
 `;
