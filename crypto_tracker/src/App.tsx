@@ -2,7 +2,7 @@ import React from 'react';
 import Router from 'Router';
 import { createGlobalStyle } from 'styled-components';
 const GlobalStyle = createGlobalStyle`
-
+@import url('https://fonts.googleapis.com/css2?family=Gemunu+Libre:wght@300&display=swap');
    html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -54,6 +54,7 @@ body {
     background-color: ${props => props.theme.bgColor};
     color:${props => props.theme.textColor};
     padding: 20px;
+    font-family:'Gemunu Libre', sans-serif;
    
 }
 a {
@@ -64,10 +65,10 @@ a {
 
 function App() {
   return (
-    <div>
+    <>
       <GlobalStyle />
       <Router />
-    </div>
+    </>
   );
 }
 
