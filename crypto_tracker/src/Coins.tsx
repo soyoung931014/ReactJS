@@ -21,7 +21,6 @@ const Coins = () => {
       setLoading(false);
     })();
   }, []);
-  console.log(coins);
 
   return (
     <Container>
@@ -34,7 +33,7 @@ const Coins = () => {
         <CoinList>
           {coins.map(coin => (
             <Coin key={coin.id}>
-              <Link to={`/${coin.name}`} state={{ name: coin.name }}>
+              <Link to={`/${coin.id}`} state={{ name: coin.name }}>
                 <Img
                   src={`https://coinicons-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`}
                   alt=""
