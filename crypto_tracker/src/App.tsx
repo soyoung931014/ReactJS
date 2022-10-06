@@ -55,7 +55,8 @@ body {
     color:${props => props.theme.textColor};
     padding: 20px;
     font-family:'Gemunu Libre', sans-serif;
-   
+    font-weight: 600;
+    line-height: 1.2;
 }
 a {
   text-decoration:none;
