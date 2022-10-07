@@ -2,7 +2,13 @@ import axios from 'axios';
 import Chart from 'routes/Chart';
 import Price from 'routes/Price';
 import React, { useEffect, useState } from 'react';
-import { Route, Routes, useLocation, useParams } from 'react-router-dom';
+import {
+  Route,
+  Routes,
+  useLocation,
+  useMatch,
+  useParams,
+} from 'react-router-dom';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
@@ -76,6 +82,10 @@ const Coin = () => {
   const [loading, setLoading] = useState(true);
   const [info, setInfo] = useState<InfoData>();
   const [priceInfo, setPriceInfo] = useState<PriceData>();
+
+  const priceMatch = useMatch('/:coinId/price');
+  const chartMatch = useMatch('/:coinId/chart');
+  console.log(priceMatch);
   useEffect(() => {
     (async () => {
       const infoData = await axios.get(
@@ -133,10 +143,10 @@ const Coin = () => {
       )}
 
       <Tabs>
-        <Tab>
+        <Tab isActive={chartMatch !== null}>
           <Link to="chart">chart</Link>
         </Tab>
-        <Tab>
+        <Tab isActive={priceMatch !== null}>
           <Link to="price">price</Link>
         </Tab>
       </Tabs>
@@ -196,7 +206,7 @@ const Tabs = styled.div`
   margin: 25px 0px;
   gap: 10px;
 `;
-const Tab = styled.span`
+const Tab = styled.span<{ isActive: boolean }>`
   text-align: center;
   text-transform: uppercase;
   font-size: 12px;
@@ -204,6 +214,7 @@ const Tab = styled.span`
   background-color: rgba(0, 0, 0, 0.5);
   padding: 7px 0px;
   border-radius: 10px;
+  color: ${props => (props.isActive ? 'red' : props.theme.textColor)};
   a {
     display: block;
   }
