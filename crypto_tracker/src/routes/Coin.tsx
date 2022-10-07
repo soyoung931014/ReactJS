@@ -1,7 +1,10 @@
 import axios from 'axios';
+import Chart from 'routes/Chart';
+import Price from 'routes/Price';
 import React, { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { Route, Routes, useLocation, useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 interface RouteState {
   state: {
@@ -86,13 +89,15 @@ const Coin = () => {
       setLoading(false);
     })();
   }, []); // 여기에 coinId를 넣든 넣지 않든 목표는 같기에 상관없다. 여기 컴포넌트에서 coinId는 URL의 위치에서 절대 변하지 않기 때문
-  console.log(info);
-  console.log(priceInfo);
+  // console.log(info);
+  // console.log(priceInfo);
 
   return (
     <Container>
       <Header>
-        <Title>{state?.name || 'Loading'}</Title>
+        <Title>
+          {state?.name ? state.name : loading ? 'Loading...' : info?.name}
+        </Title>
         {/*  //state가 존재하면 name가져오고 존재 안하면 loading */}
       </Header>
       {loading ? (
@@ -126,6 +131,20 @@ const Coin = () => {
           </Overview>
         </>
       )}
+
+      <Tabs>
+        <Tab>
+          <Link to="chart">chart</Link>
+        </Tab>
+        <Tab>
+          <Link to="price">price</Link>
+        </Tab>
+      </Tabs>
+
+      <Routes>
+        <Route path="chart" element={<Chart />} />
+        <Route path="price" element={<Price />} />
+      </Routes>
     </Container>
   );
 };
@@ -170,4 +189,22 @@ const OverviewItem = styled.div`
 `;
 const Description = styled.p`
   margin: 20px 0px;
+`;
+const Tabs = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  margin: 25px 0px;
+  gap: 10px;
+`;
+const Tab = styled.span`
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 400;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 7px 0px;
+  border-radius: 10px;
+  a {
+    display: block;
+  }
 `;

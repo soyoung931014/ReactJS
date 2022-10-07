@@ -1,5 +1,5 @@
-import Coin from 'Coin';
-import Coins from 'Coins';
+import Coin from 'routes/Coin';
+import Coins from 'routes/Coins';
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
@@ -8,7 +8,7 @@ const Router = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Coins />} />
-        <Route path="/:coinId" element={<Coin />} />
+        <Route path="/:coinId/*" element={<Coin />} />
       </Routes>
     </BrowserRouter>
   );
