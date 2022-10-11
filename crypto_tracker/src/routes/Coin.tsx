@@ -1,7 +1,6 @@
-import axios from 'axios';
+/* eslint-disable react/react-in-jsx-scope */
 import Chart from 'routes/Chart';
 import Price from 'routes/Price';
-import React, { useEffect, useState } from 'react';
 import {
   Route,
   Routes,
@@ -11,6 +10,8 @@ import {
 } from 'react-router-dom';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { useQuery } from 'react-query';
+import { fetchCoinInfo, fetchCoinTickers } from 'api/api';
 
 interface RouteState {
   state: {
@@ -76,86 +77,77 @@ interface PriceData {
   };
 }
 const Coin = () => {
-  console.log(useParams());
   const { coinId } = useParams() as unknown as Param;
   const { state } = useLocation() as RouteState;
-  const [loading, setLoading] = useState(true);
-  const [info, setInfo] = useState<InfoData>();
-  const [priceInfo, setPriceInfo] = useState<PriceData>();
 
   const priceMatch = useMatch('/:coinId/price');
   const chartMatch = useMatch('/:coinId/chart');
-  console.log(priceMatch);
-  useEffect(() => {
-    (async () => {
-      const infoData = await axios.get(
-        `https://api.coinpaprika.com/v1/coins/${coinId}`,
-      );
-      const PriceData = await axios.get(
-        `https://api.coinpaprika.com/v1/tickers/${coinId}`,
-      );
-      setInfo(infoData.data);
-      setPriceInfo(PriceData.data);
-      setLoading(false);
-    })();
-  }, []); // 여기에 coinId를 넣든 넣지 않든 목표는 같기에 상관없다. 여기 컴포넌트에서 coinId는 URL의 위치에서 절대 변하지 않기 때문
-  // console.log(info);
-  // console.log(priceInfo);
+  // 아래: 배열에 감싸서 아래와 같이 표현해주면 고유한 값이다.
+  const { isLoading: infoLoading, data: infoData } = useQuery<InfoData>(
+    ['info', coinId],
+    () => fetchCoinInfo(coinId),
+  );
+  const { isLoading: tickersLoading, data: tickersData } = useQuery<PriceData>(
+    ['tickers', coinId],
+    () => fetchCoinTickers(coinId),
+  );
 
+  const loading = infoLoading || tickersLoading;
   return (
-    <Container>
-      <Header>
-        <Title>
-          {state?.name ? state.name : loading ? 'Loading...' : info?.name}
-        </Title>
-        {/*  //state가 존재하면 name가져오고 존재 안하면 loading */}
-      </Header>
-      {loading ? (
-        <Loader>Loading...</Loader>
-      ) : (
-        <>
-          <Overview>
-            <OverviewItem>
-              <span>Rank:</span>
-              <span>{info?.rank}</span>
-            </OverviewItem>
-            <OverviewItem>
-              <span>Symbol:</span>
-              <span>${info?.symbol}</span>
-            </OverviewItem>
-            <OverviewItem>
-              <span>Open Source:</span>
-              <span>{info?.open_source ? 'Yes' : 'No'}</span>
-            </OverviewItem>
-          </Overview>
-          <Description>{info?.description}</Description>
-          <Overview>
-            <OverviewItem>
-              <span>Total Supply:</span>
-              <span>{priceInfo?.total_supply}</span>
-            </OverviewItem>
-            <OverviewItem>
-              <span>Max Supply:</span>
-              <span>{priceInfo?.max_supply}</span>
-            </OverviewItem>
-          </Overview>
-        </>
-      )}
+    <>
+      <Container>
+        <Header>
+          <Title>
+            {state?.name ? state.name : loading ? 'Loading...' : infoData?.name}
+          </Title>
+        </Header>
+        {loading ? (
+          <Loader>Loading...</Loader>
+        ) : (
+          <>
+            <Overview>
+              <OverviewItem>
+                <span>Rank:</span>
+                <span>{infoData?.rank}</span>
+              </OverviewItem>
+              <OverviewItem>
+                <span>Symbol:</span>
+                <span>${infoData?.symbol}</span>
+              </OverviewItem>
+              <OverviewItem>
+                <span>Open Source:</span>
+                <span>{infoData?.open_source ? 'Yes' : 'No'}</span>
+              </OverviewItem>
+            </Overview>
+            <Description>{infoData?.description}</Description>
+            <Overview>
+              <OverviewItem>
+                <span>Total Supply:</span>
+                <span>{tickersData?.total_supply}</span>
+              </OverviewItem>
+              <OverviewItem>
+                <span>Max Supply:</span>
+                <span>{tickersData?.max_supply}</span>
+              </OverviewItem>
+            </Overview>
+          </>
+        )}
 
-      <Tabs>
-        <Tab isActive={chartMatch !== null}>
-          <Link to="chart">chart</Link>
-        </Tab>
-        <Tab isActive={priceMatch !== null}>
-          <Link to="price">price</Link>
-        </Tab>
-      </Tabs>
+        <Tabs>
+          <Tab isActive={chartMatch !== null}>
+            <Link to="chart">chart</Link>
+          </Tab>
+          <Tab isActive={priceMatch !== null}>
+            <Link to="price">price</Link>
+          </Tab>
+        </Tabs>
 
-      <Routes>
-        <Route path="chart" element={<Chart />} />
-        <Route path="price" element={<Price />} />
-      </Routes>
-    </Container>
+        <Routes>
+          <Route path="chart" element={<Chart />} />
+          <Route path="price" element={<Price />} />
+        </Routes>
+      </Container>
+    </>
   );
 };
 

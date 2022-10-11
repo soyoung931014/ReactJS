@@ -1,6 +1,8 @@
 import React from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import Router from 'Router';
 import { createGlobalStyle } from 'styled-components';
+import { ReactQueryDevtools } from 'react-query/devtools';
 const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css2?family=Gemunu+Libre:wght@300&display=swap');
    html, body, div, span, applet, object, iframe,
@@ -64,12 +66,15 @@ a {
 }
 
 `;
-
+const queryClient = new QueryClient();
 function App() {
   return (
     <>
-      <GlobalStyle />
-      <Router />
+      <QueryClientProvider client={queryClient}>
+        <GlobalStyle />
+        <Router />
+        <ReactQueryDevtools initialIsOpen={true} />
+      </QueryClientProvider>
     </>
   );
 }
