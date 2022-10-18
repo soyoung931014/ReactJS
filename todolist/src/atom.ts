@@ -9,7 +9,3 @@ export const toDoState = atom<IToDo[]>({
   key: "toDo",
   default: [],
 });
-
-export interface IForm {
-  [key: string]: string;
-}
