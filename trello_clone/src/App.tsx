@@ -5,20 +5,34 @@ const App = () => {
   const onDragEnd = () => {
     return 1;
   };
-  const onDragStart = () => {
-    return 2;
-  };
+
   return (
     <div>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="one">
-          {() => (
-            <ul>
+          {(magic) => (
+            <ul {...magic.droppableProps} ref={magic.innerRef}>
               <Draggable draggableId="first" index={0}>
-                {() => <li>one</li>}
+                {(magic) => (
+                  <li
+                    ref={magic.innerRef}
+                    {...magic.draggableProps}
+                    {...magic.dragHandleProps}
+                  >
+                    one
+                  </li>
+                )}
               </Draggable>
               <Draggable draggableId="second" index={1}>
-                {() => <li>two</li>}
+                {(magic) => (
+                  <li
+                    ref={magic.innerRef}
+                    {...magic.draggableProps}
+                    {...magic.dragHandleProps}
+                  >
+                    two
+                  </li>
+                )}
               </Draggable>
             </ul>
           )}
