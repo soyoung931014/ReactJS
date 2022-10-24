@@ -1,11 +1,7 @@
 import { todoList } from "atom";
+import DraggableCard from "DraggableCard";
 import React from "react";
-import {
-  DragDropContext,
-  Draggable,
-  Droppable,
-  DropResult,
-} from "react-beautiful-dnd";
+import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 const App = () => {
@@ -21,10 +17,10 @@ const App = () => {
       console.log(toDosCopy);
       return toDosCopy;
     });
-    console.log("드래그 끝");
+    /*  console.log("드래그 끝");
     console.log("source: ", source);
     console.log("destination: ", destination);
-    console.log("draggableId: ", draggableId);
+    console.log("draggableId: ", draggableId); */
   };
 
   return (
@@ -36,18 +32,7 @@ const App = () => {
               {(magic) => (
                 <Board ref={magic.innerRef} {...magic.droppableProps}>
                   {toDos.map((toDo, index) => (
-                    <Draggable key={toDo} draggableId={toDo} index={index}>
-                      {/* 보통 key를 index로 두는것이 익숙하지만 이 경우에는 draggableId와 key와 같아야한다. */}
-                      {(magic) => (
-                        <Card
-                          ref={magic.innerRef}
-                          {...magic.dragHandleProps}
-                          {...magic.draggableProps}
-                        >
-                          {toDo}
-                        </Card>
-                      )}
-                    </Draggable>
+                    <DraggableCard key={toDo} index={index} toDo={toDo} />
                   ))}
                   {magic.placeholder}
                 </Board>
@@ -83,11 +68,4 @@ const Board = styled.div`
   background-color: ${(props) => props.theme.boardColor};
   border-radius: 5px;
   min-height: 200px;
-`;
-
-const Card = styled.div`
-  border-radius: 5px;
-  margin-bottom: 5px;
-  padding: 10px 10px;
-  background-color: ${(props) => props.theme.cardColor};
 `;
