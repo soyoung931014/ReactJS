@@ -8,13 +8,23 @@ import {
 } from "react-beautiful-dnd";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-
 const App = () => {
   const [toDos, setToDos] = useRecoilState(todoList);
-  const onDragEnd = ({ destination, source }: DropResult) => {
+  const onDragEnd = ({ draggableId, destination, source }: DropResult) => {
+    if (!destination) return; // 유저가 제 자리에 둘 떄
+    setToDos((oldToDos) => {
+      // 1) Delete item on source.index
+      const toDosCopy = [...oldToDos];
+      toDosCopy.splice(source.index, 1);
+      // 2) Put back the item on the destination.index
+      toDosCopy.splice(destination?.index, 0, draggableId);
+      console.log(toDosCopy);
+      return toDosCopy;
+    });
     console.log("드래그 끝");
-    console.log(source);
-    console.log(destination);
+    console.log("source: ", source);
+    console.log("destination: ", destination);
+    console.log("draggableId: ", draggableId);
   };
 
   return (
@@ -26,7 +36,8 @@ const App = () => {
               {(magic) => (
                 <Board ref={magic.innerRef} {...magic.droppableProps}>
                   {toDos.map((toDo, index) => (
-                    <Draggable key={index} draggableId={toDo} index={index}>
+                    <Draggable key={toDo} draggableId={toDo} index={index}>
+                      {/* 보통 key를 index로 두는것이 익숙하지만 이 경우에는 draggableId와 key와 같아야한다. */}
                       {(magic) => (
                         <Card
                           ref={magic.innerRef}
