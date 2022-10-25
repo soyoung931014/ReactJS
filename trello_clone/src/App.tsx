@@ -8,11 +8,35 @@ const App = () => {
   const [toDos, setToDos] = useRecoilState(todoList);
   const onDragEnd = ({ draggableId, destination, source }: DropResult) => {
     if (!destination) return; // 유저가 제 자리에 둘 떄
-
-    /*  console.log("드래그 끝");
-    console.log("source: ", source);
-    console.log("destination: ", destination);
-    console.log("draggableId: ", draggableId); */
+    if (destination.droppableId === source.droppableId) {
+      //same board, 수정이 일어난 보드만 복사해준다.
+      setToDos((oldToDos) => {
+        const boardCopy = [...oldToDos[source.droppableId]];
+        boardCopy.splice(source.index, 1);
+        boardCopy.splice(destination?.index, 0, draggableId);
+        console.log(oldToDos);
+        console.log(boardCopy);
+        return {
+          ...oldToDos,
+          [source.droppableId]: boardCopy,
+        };
+      });
+    }
+    if (destination.droppableId !== source.droppableId) {
+      setToDos((allBoards) => {
+        const sourceBoard = [...allBoards[source.droppableId]];
+        const targetBoard = [...allBoards[destination.droppableId]];
+        sourceBoard.splice(source.index, 1);
+        targetBoard.splice(destination?.index, 0, draggableId);
+        return {
+          ...allBoards,
+          [source.droppableId]: sourceBoard,
+          [destination.droppableId]: targetBoard,
+        };
+      });
+    }
+    console.log(draggableId, "destination:", destination, "source :", source);
+    console.log(toDos);
   };
 
   return (
