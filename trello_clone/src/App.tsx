@@ -12,8 +12,9 @@ const App = () => {
       //same board, 수정이 일어난 보드만 복사해준다.
       setToDos((oldToDos) => {
         const boardCopy = [...oldToDos[source.droppableId]];
+        const taskObj = boardCopy[source.index];
         boardCopy.splice(source.index, 1);
-        boardCopy.splice(destination?.index, 0, draggableId);
+        boardCopy.splice(destination?.index, 0, taskObj);
         console.log(oldToDos);
         console.log(boardCopy);
         return {
@@ -25,9 +26,10 @@ const App = () => {
     if (destination.droppableId !== source.droppableId) {
       setToDos((allBoards) => {
         const sourceBoard = [...allBoards[source.droppableId]];
+        const taskObj = sourceBoard[source.index];
         const targetBoard = [...allBoards[destination.droppableId]];
         sourceBoard.splice(source.index, 1);
-        targetBoard.splice(destination?.index, 0, draggableId);
+        targetBoard.splice(destination?.index, 0, taskObj);
         return {
           ...allBoards,
           [source.droppableId]: sourceBoard,

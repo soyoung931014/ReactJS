@@ -2,14 +2,15 @@ import React from "react";
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
 interface IDragabbleCardProps {
-  toDo: string;
+  toDoId: number;
+  toDoText: string;
   index: number;
 }
 
-const DraggableCard = ({ toDo, index }: IDragabbleCardProps) => {
-  console.log("todo", toDo);
+const DraggableCard = ({ toDoText, toDoId, index }: IDragabbleCardProps) => {
+  console.log("toDoText", toDoText);
   return (
-    <Draggable key={toDo} draggableId={toDo} index={index}>
+    <Draggable key={toDoText} draggableId={toDoId + ""} index={index}>
       {(magic, snapshot) => (
         <Card
           isDragging={snapshot.isDragging}
@@ -17,7 +18,7 @@ const DraggableCard = ({ toDo, index }: IDragabbleCardProps) => {
           {...magic.dragHandleProps}
           {...magic.draggableProps}
         >
-          {toDo}
+          {toDoText}
         </Card>
       )}
     </Draggable>
